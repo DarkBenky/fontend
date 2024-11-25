@@ -66,7 +66,7 @@
       <div v-else class="voting-section">
         <div v-if="type==='waiting'">
           <h2 class="text-gradient">Waiting for the next question...</h2>
-          <h3>Time left: {{ time_left }} seconds</h3>
+          <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
         </div>
         <div v-if="type==='end'">
           <h2 class="text-gradient">Voting has ended</h2>
@@ -91,7 +91,7 @@
         </div>
         <div v-if="type==='pomoc'">
           <h2 class="text-gradient">Pomoc</h2>
-          <h3>Time left: {{ time_left }} seconds</h3>
+          <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
           <h3>{{ question }}</h3>
           <h2 class="vote-display">
               <span v-if="votePomoc">{{votePomoc}}</span>
