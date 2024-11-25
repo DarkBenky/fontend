@@ -170,10 +170,12 @@ export default {
       try {
         const response = await axios.post(this.url+"/submit-vote", {
           votes: this.votePomoc,
-          type: this.votingType,
+          // type: this.votingType,
+          type: this.type,
           email: this.email,
           parent_name : this.parentName,
           time_left : this.time_left,
+          question : this.question,
         });
         // alert(response.data.message);
         console.log(response.data.message);
@@ -188,10 +190,12 @@ export default {
       try {
         const response = await axios.post(this.url+"/submit-vote", {
           votes: this.votesRozstrel,
-          type: this.votingType,
+          // type: this.votingType,
+          type: this.type,
           email: this.email,
           parent_name : this.parentName,
           time_left : this.time_left,
+          question : this.question,
         });
         // alert(response.data.message);
         console.log(response.data.message);
