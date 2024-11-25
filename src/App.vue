@@ -73,7 +73,7 @@
         </div>
         <div v-if="type==='rozstrel'" class="fade-transition">
           <h2 class="text-gradient">Rozstrel</h2>
-          <h3>Time left: {{ time_left }} seconds</h3>
+          <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
           <h3>{{ question }}</h3>
           <h2 class="vote-display">
               <span v-for="(vote, index) in votesRozstrel" :key="index">
