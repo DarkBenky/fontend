@@ -36,13 +36,14 @@
 
         <div v-else class="voting-section">
           <div v-if="type === 'waiting'">
+            <h3>Answered {{ answered }} / {{ total }} </h3>
             <h2 class="text-gradient">Waiting for the next question...</h2>
           </div>
           <div v-if="type === 'end'">
             <h2 class="text-gradient">Voting has ended</h2>
           </div>
           <div v-if="type === 'rozstrel'" class="fade-transition">
-            <h3>Answered {{answered}} / {{ total }} </h3>
+            <h3>Answered {{ answered }} / {{ total }} </h3>
             <h2 class="text-gradient">Rozstrel</h2>
             <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
             <h3>{{ question }}</h3>
@@ -61,7 +62,7 @@
             </div>
           </div>
           <div v-if="type === 'pomoc'">
-            <h3>Answered {{answered}} / {{ total }} </h3>
+            <h3>Answered {{ answered }} / {{ total }} </h3>
             <h2 class="text-gradient">Pomoc</h2>
             <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
             <h3>{{ question }}</h3>
@@ -139,10 +140,12 @@ export default {
   },
   methods: {
     submitVote() {
-      if (this.type == "rozstrel") {
-        this.submitVotesRozstrel();
-      } else {
-        this.submitVotesPomoc();
+      if (!this.submitted) {
+        if (this.type == "rozstrel") {
+          this.submitVotesRozstrel();
+        } else {
+          this.submitVotesPomoc();
+        }
       }
     },
 
