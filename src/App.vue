@@ -1,115 +1,87 @@
 <template>
   <div class="body">
-  <div class="app-container">
-    <div class="form-card animate-slide-in">
-      <div v-if="!isVerified">
-        <h1 class="text-gradient">School Vote</h1>
-        <div v-if="!codeSent" class="fade-transition">
-          <label for="email">School Email:</label>
-          <input 
-            id="email" 
-            type="email" 
-            v-model="email" 
-            :class="{
+    <div class="app-container">
+      <div class="form-card animate-slide-in">
+        <div v-if="!isVerified">
+          <h1 class="text-gradient">School Vote</h1>
+          <div v-if="!codeSent" class="fade-transition">
+            <label for="email">School Email:</label>
+            <input id="email" type="email" v-model="email" :class="{
               'input-valid': isEmailValid && email.length > 0,
               'input-invalid': !isEmailValid && email.length > 0
-            }" 
-            placeholder="Enter your school email" 
-          />
-          <button 
-            v-if="validateSchoolEmail(email)" 
-            :disabled="!email" 
-            @click="sendCode" 
-            class="btn-primary"
-          >
-            Send Verification Code
-          </button>
-          <span v-else class="error-text">
-            Please enter a valid school email address.
-          </span>
-        </div>
-        <div v-if="codeSent" class="code-section fade-transition">
-          <label for="code">Verification Code:</label>
-          <input 
-            id="code" 
-            type="text" 
-            v-model="code" 
-            placeholder="Enter verification code" 
-          />
-          <button 
-            :disabled="!code" 
-            @click="verifyCode" 
-            class="btn-primary"
-          >
-            Verify
-          </button>
-        </div>
-      </div>
-
-      <div v-else-if="!parentNameSubmitted" claserror-color="fade-transition">
-        <label for="parentName">Parent's Name:</label>
-        <input 
-          id="parentName" 
-          type="text" 
-          v-model="parentName" 
-          placeholder="Enter parent's name" 
-        />
-        <button 
-          :disabled="!parentName" 
-          @click="submitParentName" 
-          class="btn-primary"
-        >
-          Submit
-        </button>
-      </div>
-
-      <div v-else class="voting-section">
-        <div v-if="type==='waiting'">
-          <h2 class="text-gradient">Waiting for the next question...</h2>
-          <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
-        </div>
-        <div v-if="type==='end'">
-          <h2 class="text-gradient">Voting has ended</h2>
-        </div>
-        <div v-if="type==='rozstrel'" class="fade-transition">
-          <h2 class="text-gradient">Rozstrel</h2>
-          <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
-          <h3>{{ question }}</h3>
-          <h2 class="vote-display">
-              <span v-for="(vote, index) in votesRozstrel" :key="index">
-                {{ vote }} 
-              </span>
-          </h2>
-          <div class="voting-buttons">
-            <button @click="addVoteRozstrel('A')" class="vote-btn">A</button>
-            <button @click="addVoteRozstrel('B')" class="vote-btn">B</button>
-            <button @click="addVoteRozstrel('C')" class="vote-btn">C</button>
-            <button @click="addVoteRozstrel('D')" class="vote-btn">D</button>
-            <button @click="submitVote" class="btn-primary">Submit</button>
-            <button @click="votesRozstrel = []" class="btn-secondary">Clear</button>
+            }" placeholder="Enter your school email" />
+            <button v-if="validateSchoolEmail(email)" :disabled="!email" @click="sendCode" class="btn-primary">
+              Send Verification Code
+            </button>
+            <span v-else class="error-text">
+              Please enter a valid school email address.
+            </span>
+          </div>
+          <div v-if="codeSent" class="code-section fade-transition">
+            <label for="code">Verification Code:</label>
+            <input id="code" type="text" v-model="code" placeholder="Enter verification code" />
+            <button :disabled="!code" @click="verifyCode" class="btn-primary">
+              Verify
+            </button>
           </div>
         </div>
-        <div v-if="type==='pomoc'">
-          <h2 class="text-gradient">Pomoc</h2>
-          <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
-          <h3>{{ question }}</h3>
-          <h2 class="vote-display">
-              <span v-if="votePomoc">{{votePomoc}}</span>
+
+        <div v-else-if="!parentNameSubmitted" claserror-color="fade-transition">
+          <label for="parentName">Parent's Name:</label>
+          <input id="parentName" type="text" v-model="parentName" placeholder="Enter parent's name" />
+          <button :disabled="!parentName" @click="submitParentName" class="btn-primary">
+            Submit
+          </button>
+        </div>
+
+        <div v-else class="voting-section">
+          <div v-if="type === 'waiting'">
+            <h2 class="text-gradient">Waiting for the next question...</h2>
+          </div>
+          <div v-if="type === 'end'">
+            <h2 class="text-gradient">Voting has ended</h2>
+          </div>
+          <div v-if="type === 'rozstrel'" class="fade-transition">
+            <h3>Answered {{answered}} / {{ total }} </h3>
+            <h2 class="text-gradient">Rozstrel</h2>
+            <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
+            <h3>{{ question }}</h3>
+            <h2 class="vote-display">
+              <span v-for="(vote, index) in votesRozstrel" :key="index">
+                {{ vote }}
+              </span>
+            </h2>
+            <div class="voting-buttons">
+              <button @click="addVoteRozstrel('A')" class="vote-btn">A</button>
+              <button @click="addVoteRozstrel('B')" class="vote-btn">B</button>
+              <button @click="addVoteRozstrel('C')" class="vote-btn">C</button>
+              <button @click="addVoteRozstrel('D')" class="vote-btn">D</button>
+              <button @click="submitVote" class="btn-primary">Submit</button>
+              <button @click="votesRozstrel = []" class="btn-secondary">Clear</button>
+            </div>
+          </div>
+          <div v-if="type === 'pomoc'">
+            <h3>Answered {{answered}} / {{ total }} </h3>
+            <h2 class="text-gradient">Pomoc</h2>
+            <h3>Time left: {{ time_left / 1000000000 }} seconds</h3>
+            <h3>{{ question }}</h3>
+            <h2 class="vote-display">
+              <span v-if="votePomoc">{{ votePomoc }}</span>
               <span v-else>No vote provided</span>
-          </h2>
-          <div class="voting-buttons">
-            <button @click="votePomoc = 'A'" class="vote-btn">A</button>
-            <button @click="votePomoc = 'B'" class="vote-btn">B</button>
-            <button @click="votePomoc = 'C'" class="vote-btn">C</button>
-            <button @click="votePomoc = 'D'" class="vote-btn">D</button>
-            <button @click="submitVote" class="btn-primary">Submit</button>
-            <button @click="votePomoc = ''" class="btn-secondary">Clear</button>
+            </h2>
+            <div class="voting-buttons">
+              <button @click="votePomoc = 'A'" class="vote-btn">A</button>
+              <button @click="votePomoc = 'B'" class="vote-btn">B</button>
+              <button @click="votePomoc = 'C'" class="vote-btn">C</button>
+              <button @click="votePomoc = 'D'" class="vote-btn">D</button>
+              <button @click="submitVote" class="btn-primary">Submit</button>
+              <button @click="votePomoc = ''" class="btn-secondary">Clear</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 
@@ -120,13 +92,13 @@ import axios from "axios";
 export default {
   data() {
     return {
-      url : "http://192.168.1.170:5000",
-      golangUrl : "http://192.168.1.170:8050",
-      votePomoc : "",
+      url: "http://192.168.1.170:5000",
+      golangUrl: "http://192.168.1.170:8050",
+      votePomoc: "",
       email: "matus.benky@gmail.com",
       code: "",
       parentName: "",
-      isVerified: true,
+      isVerified: false,
       codeSent: false,
       parentNameSubmitted: false,
       votesRozstrel: [],
@@ -136,8 +108,11 @@ export default {
       currentVoteIndex: 0,
       votingType: "rozstrel",
       question: "", // Holds the currently displayed question
-      time_left : 0,
+      time_left: 0,
       type: "",
+      submitted: false,
+      answered: 0,
+      total: 0,
     };
   },
   computed: {
@@ -152,10 +127,15 @@ export default {
       if (this.time_left <= 0) {
         this.submitVote()
       }
-    }, 50); // Fetch every 5 seconds
+    }, 50);
+
+    this.answeredInterval = setInterval(() => {
+      this.getNumberOfVotes();
+    }, 1000); // Fetch every 1 seconds
   },
   beforeUnmount() {
     clearInterval(this.questionInterval); // Cleanup interval
+    clearInterval(this.answeredInterval);
   },
   methods: {
     submitVote() {
@@ -168,18 +148,19 @@ export default {
 
     async submitVotesPomoc() {
       try {
-        const response = await axios.post(this.url+"/submit-vote", {
+        const response = await axios.post(this.url + "/submit-vote", {
           votes: this.votePomoc,
           // type: this.votingType,
           type: this.type,
           email: this.email,
-          parent_name : this.parentName,
-          time_left : this.time_left,
-          question : this.question,
+          parent_name: this.parentName,
+          time_left: this.time_left,
+          question: this.question,
         });
         // alert(response.data.message);
         console.log(response.data.message);
         this.votesRozstrel = [];
+        this.submitted = true;
       } catch (error) {
         // alert(error.response?.data?.error || "Failed to submit votes.");
         console.error(error);
@@ -188,18 +169,19 @@ export default {
 
     async submitVotesRozstrel() {
       try {
-        const response = await axios.post(this.url+"/submit-vote", {
+        const response = await axios.post(this.url + "/submit-vote", {
           votes: this.votesRozstrel,
           // type: this.votingType,
           type: this.type,
           email: this.email,
-          parent_name : this.parentName,
-          time_left : this.time_left,
-          question : this.question,
+          parent_name: this.parentName,
+          time_left: this.time_left,
+          question: this.question,
         });
         // alert(response.data.message);
         console.log(response.data.message);
         this.votesRozstrel = [];
+        this.submitted = true;
       } catch (error) {
         console.error(error);
         // alert(error.response?.data?.error || "Failed to submit votes.");
@@ -215,14 +197,31 @@ export default {
       }
     },
 
+    async getNumberOfVotes() {
+      try {
+        const response = await axios.post(this.url + "/number-of-votes", {
+          question: this.question,
+        });
+        this.answered = response.data.answered;
+        this.total = response.data.total;
+      }
+      catch (error) {
+        console.error(error);
+      }
+
+    },
+
     fetchQuestion() {
       axios
-        .get(this.golangUrl+"/get-question")
+        .get(this.golangUrl + "/get-question")
         .then((response) => {
           const newQuestion = response.data.question;
-          this.type = response.data.type;
-          this.time_left = response.data.time_left;
-          if (newQuestion !== this.question) {
+          if (this.submitted && newQuestion == this.question) {
+            this.type = "waiting";
+          } else {
+            this.submitted = false;
+            this.type = response.data.type;
+            this.time_left = response.data.time_left;
             this.question = newQuestion; // Update only if the question has changed
           }
         })
@@ -241,7 +240,7 @@ export default {
     },
     async sendCode() {
       try {
-        const response = await axios.post(this.url+"/send-code", {
+        const response = await axios.post(this.url + "/send-code", {
           email: this.email,
         });
         this.codeSent = true;
@@ -263,7 +262,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.post(this.url+"/verify-code", {
+        const response = await axios.post(this.url + "/verify-code", {
           email: this.email,
           code: this.code.trim(),
         });
@@ -282,7 +281,7 @@ export default {
       }
       try {
         const response = await axios.post(
-          this.url+"/submit-parent",
+          this.url + "/submit-parent",
           {
             email: this.email,
             parent_name: this.parentName,
@@ -316,7 +315,7 @@ export default {
     },
     async submitAllVotes() {
       try {
-        const response = await axios.post(this.url+"/submit-vote", {
+        const response = await axios.post(this.url + "/submit-vote", {
           votes: this.votes,
           type: this.votingType,
           email: this.email,
